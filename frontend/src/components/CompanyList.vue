@@ -3,7 +3,6 @@
         <template v-for="company in companyList" :key="'company_repview_'+company.id">
             <CompanyPreview :name="company.name" />
         </template>
-
     </div>
 </template>
 

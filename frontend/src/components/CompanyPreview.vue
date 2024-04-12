@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between w-full gap-y-3 border rounded-md p-4" @click="onPreviewClick">
+    <div class="flex justify-between w-full gap-y-3 border-2 rounded-md p-4" @click="onPreviewClick">
         <div class="flex flex-col gap-y-3">
             <div class="flex gap-x-4">
                 <img class=" w-16 h-16 bg-black rounded-md" src="./../assets/company_logo.webp" alt="">
