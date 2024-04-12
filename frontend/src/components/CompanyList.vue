@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col w-full px-16 gap-y-4">
         <div>
-            Company count: {{ companyList.length }}
+            Company count: {{ companyList.length }} {{ filters }}
         </div>
         <div class="flex flex-col gap-y-4 w-full ">
             <template v-for="company in companyList" :key="'company_repview_'+company.id">
@@ -12,10 +12,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineProps } from 'vue'
 import axios from 'axios'
 import CompanyPreview from './CompanyPreview.vue';
 import _ from 'lodash'
+
+defineProps({
+    filters: {
+        type: Array
+    }
+})
 
 const companyList = ref([]);
 
