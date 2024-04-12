@@ -1,8 +1,13 @@
 <template>
-    <div class="flex flex-col gap-y-4 w-full p-16">
-        <template v-for="company in companyList" :key="'company_repview_'+company.id">
-            <CompanyPreview :name="company.name" />
-        </template>
+    <div class="flex flex-col w-full px-16 gap-y-4">
+        <div>
+            Company count: {{ companyList.length }}
+        </div>
+        <div class="flex flex-col gap-y-4 w-full ">
+            <template v-for="company in companyList" :key="'company_repview_'+company.id">
+                <CompanyPreview :name="company.name" />
+            </template>
+        </div>
     </div>
 </template>
 
