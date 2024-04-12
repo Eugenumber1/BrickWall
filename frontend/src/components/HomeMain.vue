@@ -11,9 +11,5 @@ import SidePanel from './SidePanel.vue';
 import CompanyList from './CompanyList.vue';
 
 const filters = ref([]);
-
-const onFilterUpdated = (newFilters) => {
-    console.log('s', newFilters);
-    filters.value = newFilters;
-}
+const onFilterUpdated = (newFilters) => filters.value = newFilters;
 </script>
