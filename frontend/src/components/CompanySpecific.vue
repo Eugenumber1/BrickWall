@@ -1,6 +1,19 @@
 <template>
-    <div>
-        User {{ $route.params.id }}
+    <div class="grid grid-cols-8 w-full h-full min-h-screen pt-24 ">
+        <div class=" flex flex-col col-start-3 col-span-4">
+            <div class="flex relative mx-auto w-full rounded-md h-80 group overflow-hidden " @click="onPreviewClick">
+                <img class="absolute h-full w-full object-fill object-center bg-black rounded-md blur-sm transition"
+                    src="./../assets/company_background.png" alt="">
+            </div>
+            <div class="flex flex-col mt-8 ">
+                <span class="unbounded  mt-auto text-3xl font-semibold text-[#2b2b2b]">Company name {{ $route.params.id
+                }}</span>
+
+                <span>
+
+                </span>
+            </div>
+        </div>
     </div>
 </template>
 

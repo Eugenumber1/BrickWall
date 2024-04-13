@@ -1,4 +1,5 @@
 <template>
+    <NavigationBar></NavigationBar>
     <div class="flex flex-col h-full w-full gap-y-8">
         <div class="flex flex-col mx-auto py-24 gap-y-16">
             <h1 class="text-9xl font-semibold"> Brick Wall</h1>
@@ -19,6 +20,7 @@
 
 <script setup>
 import CompanyList from './CompanyList.vue';
+import NavigationBar from './NavigationBar.vue';
 import { useFiltersStore } from '@/filters.js';
 import { computed } from 'vue'
 
