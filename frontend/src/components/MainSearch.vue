@@ -15,7 +15,7 @@ import { ref, onMounted } from 'vue';
 import { useFiltersStore } from '@/filters.js';
 
 const store = useFiltersStore();
-const FIELDS = ['name', 'location', 'industry']
+const FIELDS = ['name', 'description']
 
 const search = ref('');
 const miniSearch = ref();

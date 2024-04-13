@@ -10,12 +10,14 @@
   "dependencies": {
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
+    "less": "^4.2.0",
     "lodash": "^4.17.21",
     "minisearch": "^6.3.0",
     "pinia": "^2.1.7",
     "vue": "^3.2.13",
     "vue-lodash": "^2.1.2",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

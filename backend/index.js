@@ -1,8 +1,23 @@
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const bandada = require('./bandada');
+const mySemaphore = require('./semaphore');
+const bodyParser = require('body-parser');
+const { stringify } = require('querystring');
 const app = express();
-app.use(cors());
 
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const pr_key = process.env.PR_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+app.use(express.json());
+
+app.use(cors());
+app.use(bodyParser.json());
 
 const port = 3000;
 
@@ -14,79 +29,48 @@ app.get('/api/status', (req, res) => {
     res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
-app.get('/api/companylist', (req, res) => {
-    // TODO: retrieve the list of companies from db
-    const list = [
-        { id: 1, name: 'Company One', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'New York', size: 'Large', industry: 'Technology' },
-        { id: 2, name: 'Company Two', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'San Francisco', size: 'Medium', industry: 'Finance' },
-        { id: 3, name: 'Company Three', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Los Angeles', size: 'Small', industry: 'Healthcare' },
-        { id: 4, name: 'Company Four', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Chicago', size: 'Large', industry: 'Retail' },
-        { id: 5, name: 'Company Five', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Boston', size: 'Medium', industry: 'Technology' },
-        { id: 6, name: 'Company Six', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Seattle', size: 'Small', industry: 'Finance' },
-        { id: 7, name: 'Company Seven', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Austin', size: 'Large', industry: 'Healthcare' },
-        { id: 8, name: 'Company Eight', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Atlanta', size: 'Medium', industry: 'Retail' },
-        { id: 9, name: 'Company Nine', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Miami', size: 'Small', industry: 'Technology' },
-        { id: 10, name: 'Company Ten', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Denver', size: 'Large', industry: 'Finance' },
-        { id: 11, name: 'Company Eleven', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Houston', size: 'Medium', industry: 'Healthcare' },
-        { id: 12, name: 'Company Twelve', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Dallas', size: 'Small', industry: 'Retail' },
-        { id: 13, name: 'Company Thirteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Phoenix', size: 'Large', industry: 'Technology' },
-        { id: 14, name: 'Company Fourteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Philadelphia', size: 'Medium', industry: 'Finance' },
-        { id: 15, name: 'Company Fifteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'San Diego', size: 'Small', industry: 'Healthcare' },
-        { id: 16, name: 'Company Sixteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Detroit', size: 'Large', industry: 'Retail' },
-        { id: 17, name: 'Company Seventeen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Portland', size: 'Medium', industry: 'Technology' },
-        { id: 18, name: 'Company Eighteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'San Antonio', size: 'Small', industry: 'Finance' },
-        { id: 19, name: 'Company Nineteen', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Las Vegas', size: 'Large', industry: 'Healthcare' },
-        { id: 20, name: 'Company Twenty', reviewsCount: 0, salariesCount: 0, vacanciesCount: 0, location: 'Orlando', size: 'Medium', industry: 'Retail' }
-    ];
-
+app.get('/api/companylist', async (req, res) => {
+    const list = await bandada.getAllGroups();
     res.json(list);
 });
 
-app.get('/api/company/:id', (req, res) => {
-    // TODO: fetch company(group) data from db 
-    const id = parseInt(req.params.id);
-    const company = { id, name: `Company ${id}` };
+app.get('/api/company/:id', async (req, res) => {
+    const id = req.params.id;
+    const company = await bandada.getGroupById(id.toString());
     res.json(company);
 });
 
-app.get('/api/company/:id/proof', (req, res) => {
-    // TODO: retrieve merkle proof for a company(group)
-    // invoke a function from bandada.js
-    const id = parseInt(req.params.id);
-    const proof = { id, proof: '0x1234567890' };
+app.get('/api/company/:id/member/:memberid/proof', async (req, res) => {
+    const id = req.params.id;
+    const memberId = req.params.memberid;
+    const proof = await bandada.getGroupProofByUId(id.toString(), memberId.toString());
     res.json(proof);
 });
 
-app.get('/api/company/:id/members', (req, res) => {
-    // TODO: retrieve all members of a company(group)
-    // invoke a function from bandada.js
-    const id = parseInt(req.params.id);
-    const members = [
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-        { id: 3, name: 'Charlie' },
-    ];
+app.get('/api/company/:id/members', async (req, res) => {
+    const id = req.params.id;
+    const groupData = await bandada.getGroupById(id.toString());
+    const members = groupData.group.members;
     res.json(members);
 });
 
-app.post('/api/company/:id/review', (req, res) => {
-    // TODO: upload a review for a company(group)
-    // invoke a function from bandada.js 
-    const id = parseInt(req.params.id);
-    const review = req.body;
-    res.json({ id, review });
+app.post('/api/company', async (req, res) => {
+    console.log(`Creating company with data: ${JSON.stringify(req.body)}`)
+    const name = req.body.name;
+    const description = req.body.description;
+    const created = await bandada.createGroup(name, description);
+    res.json(created);
 });
 
-app.post('/api/company/:id/member', (req, res) => {
-    // TODO: add a member to a company(group)
-    // invoke a function from bandada.js
-    const id = parseInt(req.params.id);
-    const member = req.body;
-    res.json({ id, member });
+app.post('/api/company/:id/member/:memberid', async (req, res) => {
+    const id = req.params.id;
+    const memberId = req.params.memberid;
+    const added = await bandada.addMemberToGroup(id, memberId);
+    res.json({ status: added, member: memberId, group: id });
 });
 
 app.delete('/api/company/:id/review/:reviewId', (req, res) => {
-    // TODO: remove a review from a company(group)
+    // TODO: remove a review from a DB
     const id = parseInt(req.params.id);
     const reviewId = parseInt(req.params.reviewId);
     res.json({ id, reviewId });
@@ -98,3 +82,123 @@ app.delete('/api/company/:id/member/:memberId', (req, res) => {
     const memberId = parseInt(req.params.memberId);
     res.json({ id, memberId });
 });
+
+app.delete('/api/company/:id/member/:memberId', async (req, res) => {
+    const id = req.params.id;
+    const memberId = req.params.memberId;
+    // remove member from group 
+    const removed = await bandada.removeMemberFromGroup(id, memberId);
+    res.json({ status: removed, member: memberId, group: id });
+});
+
+app.delete('/api/company/:id', async (req, res) => {
+    const id = req.params.id;
+    const removed = await bandada.removeGroups([id]);
+    res.json({ status: removed, group: id });
+});
+
+/////////////////////////// DB ///////////////////////////
+
+function generateWalletHash(userWallet) {
+    const hmac = crypto.createHmac('sha256', pr_key);
+    hmac.update(userWallet);
+    const hash = hmac.digest('hex');
+    return hash;
+}
+
+function verifyWalletHash(userWallet, originalHash) {
+    const hash = generateWalletHash(userWallet, pr_key);
+    return hash === originalHash;
+}
+
+async function findUserByWallet(userWallet) {
+    const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('wallet', userWallet)
+    if (error) {
+        console.log(`Error fetching user by wallet: ${error.message}`)
+        return null;
+    }
+    
+    return data[0]; //we need only one user ^)))
+}
+
+app.post('/api/login', async (req, res) => {
+    //Generate hash and verify Metamask wallet
+    try {        
+        const userWallet = JSON.stringify(req.body.wallet);
+        console.log(`User wallet: ${userWallet}`)
+        const userWalletHash = generateWalletHash(userWallet);
+        const isValid = verifyWalletHash(userWallet, userWalletHash);
+        if (!isValid) {
+            res.status(401).json({ error: 'Invalid wallet' });
+            return;
+        }
+        const userIdent = await mySemaphore.createIdentity(userWalletHash);
+
+        //Find wallet in Supabase. If not found, create a new user
+        let user = await findUserByWallet(userWalletHash);
+
+        if (user === null) {
+            console.log(`User not found, creating user: ${userWalletHash}`)
+            const { error } = await supabase
+                .from('users')
+                .insert([{ wallet: userWalletHash }])
+            if (error) {
+                res.status(401).json({ error: 'Error creating user: ' + error.message });
+            }
+
+            //Get user by wallet
+            user = await findUserByWallet(userWalletHash);
+        }
+
+        res.json({ user_id: userIdent.commitment.toString(), walletHash: userWalletHash }); //user_id: user.id,
+    } catch (error) {
+        res.status(401).json({ error: 'Error logging in: ' + error.message, data: JSON.stringify(req.body) });
+    }
+})
+
+app.post('/api/saveReview', async (req, res) => {
+    try {
+        const { error } = await supabase
+            .from('reviews')
+            .insert([{
+                company_id: req.body.company_id,
+                user_id: req.body.user_id,
+                user_walletHash: req.body.walletHash,
+                content: req.body.content,
+                rating: req.body.rating
+            }])
+        if (error) {
+            res.status(401).json({ error: 'Error saving review: ' + error.message });
+        }
+        res.json({ status: 'Review saved.' });
+    }
+    catch (error) {
+        res.status(401).json({ error: 'Error saving review: ' + error.message });
+    }
+})
+
+app.post('/api/getReviewsCompany', async (req, res) => {
+    const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('company_id', req.body.company_id)
+    if (error) {
+        res.status(401).json({ error: 'Error fetching reviews by Company: ' + error.message });
+    }
+    res.json(data);
+})
+
+app.post('/api/getReviewsUser', async (req, res) => {
+    const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('user_walletHash', req.body.walletHash)
+    if (error) {
+        res.status(401).json({ error: 'Error fetching reviews by User: ' + error.message });
+    }
+    res.json(data);
+})
+
