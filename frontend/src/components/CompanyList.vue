@@ -1,7 +1,7 @@
 <template>
     <div class="grid w-full  grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-8 px-8 md:px-16">
         <template v-for="company in filteredList" :key="'company_repview_'+company.id">
-            <CompanyPreview :name="company.name" />
+            <CompanyPreview :name="company.name" :id="company.id" />
         </template>
     </div>
 </template>

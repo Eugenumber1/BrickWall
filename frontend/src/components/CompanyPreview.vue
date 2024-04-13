@@ -1,5 +1,6 @@
 <template>
-    <div class="flex relative w-full rounded-md h-80 group overflow-hidden cursor-pointer" @click="onPreviewClick">
+    <a :href="'/company/' + id" class="flex relative w-full rounded-md h-80 group overflow-hidden cursor-pointer"
+        @click="onPreviewClick">
         <img class="absolute h-full object-fill bg-black rounded-md blur-sm group-hover:scale-105 transition"
             src="./../assets/company_background.png" alt="">
         <div class="transition-all z-10 p-5 flex flex-col  group-hover:mb-8 ">
@@ -12,14 +13,18 @@
             <div class="text-sm mb-auto mr-auto p-5 text-[#2b2b2b] font-semibold">4.4 / 10</div>
         </div>
         <div class="absolute transition-all opacity-0 group-hover:opacity-100 flex w-full h-full">
-            <button class="button--outline m-auto">add review</button>
+            <button class="button--outline m-auto text-base">join</button>
         </div>
-    </div>
+    </a>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
 const props = defineProps({
+    id: {
+        type: Number,
+        default: 0,
+    },
     name: {
         type: String,
         default: 'Company name'
