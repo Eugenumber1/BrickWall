@@ -15,12 +15,10 @@ import { ref, onMounted } from 'vue';
 import { useFiltersStore } from '@/filters.js';
 
 const store = useFiltersStore();
-
 const FIELDS = ['name', 'location', 'industry']
 
 const search = ref('');
 const miniSearch = ref();
-
 const companyList = ref([]);
 
 const fetchData = async () => {
