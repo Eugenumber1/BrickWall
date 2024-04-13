@@ -1,5 +1,6 @@
 <template>
     <div class="flex flex-col h-full gap-y-8 px-4">
+        <MainSearch v-on:onSearch="(a) => onSearch(a)"></MainSearch>
         <div class="flex flex-col">
             <span>Name:</span>
             <input v-model="nameFilter" @input="() => updateFilters()">
@@ -17,12 +18,17 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
+import MainSearch from './MainSearch.vue';
 
 const emit = defineEmits(['onFilterUpdated'])
 
 const nameFilter = ref('');
 const industryFilter = ref('');
 const locationFilter = ref('');
+
+const onSearch = (data) => {
+    console.log('main search', data)
+}
 
 const updateFilters = () => {
     emit('onFilterUpdated', {
