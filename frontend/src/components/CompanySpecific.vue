@@ -1,8 +1,8 @@
 <template>
     <div class="fixed z-50 w-full bg-white grid grid-cols-8">
         <div class="flex flex-row gap-x-12 w-full p-4 col-start-3 col-span-4 justify-between">
-            <img src="../assets/bw.svg" alt="Logo" class="h-12 w-12">
-            <button class="button--solid text-[#2b2b2b] py-2">back to list</button>
+            <a href="/"><img src="../assets/bw.svg" alt="Logo" class="h-12 w-12"></a>
+            <a href="/"><button class="button--solid text-[#2b2b2b] py-2">back to list</button></a>
         </div>
     </div>
     <div class="grid grid-cols-8 w-full h-full min-h-screen pt-24 ">
