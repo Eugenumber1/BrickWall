@@ -1,15 +1,22 @@
 <template>
-    <input class="main-input outline-none px-5" v-model="search" @input="() => onSearchChanged()">
+    <div class="relative w-full flex">
+        <input class="main-input w-full outline-none pl-10 pr-5" placeholder="Search for a company" v-model="search"
+            @input="() => onSearchChanged()">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="../assets/search.svg" class="h-5 w-5 text-gray-400">
+        </div>
+    </div>
 </template>
 
 <script setup>
 import MiniSearch from 'minisearch'
 import axios from 'axios'
+
 import { ref, defineEmits, onMounted } from 'vue';
 
 const emit = defineEmits('onSearch');
 
-const FIELDS = ['name', 'location']
+const FIELDS = ['name', 'location', 'industry']
 
 const search = ref('');
 const miniSearch = ref();
@@ -26,14 +33,14 @@ const fetchData = async () => {
 }
 
 const onSearchChanged = () => {
-    let results = miniSearch.value.search(search.value);
+    let results = miniSearch.value.search(search.value, { prefix: true, fuzzy: 0.2 });
     emit('onSearch', results);
     console.log('results ', results);
 }
 
 onMounted(async () => {
     await fetchData();
-    miniSearch.value = new MiniSearch({ fields: FIELDS })
+    miniSearch.value = new MiniSearch({ fields: FIELDS, storeField: FIELDS })
     miniSearch.value.addAll(companyList.value);
 })
 
