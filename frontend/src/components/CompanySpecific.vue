@@ -1,4 +1,7 @@
 <template>
+    <div class="fixed z-50 bg-white flex flex-row gap-x-12 w-full p-4">
+        <img src="../assets/bw.svg" alt="Logo" class="h-10 w-10">
+    </div>
     <div class="grid grid-cols-8 w-full h-full min-h-screen pt-24 ">
         <div class=" flex flex-col col-start-3 col-span-4">
             <div class="flex relative mx-auto w-full rounded-md h-80 group overflow-hidden " @click="onPreviewClick">
