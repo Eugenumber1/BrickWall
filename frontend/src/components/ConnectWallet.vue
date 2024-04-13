@@ -41,7 +41,8 @@ const sendData = async (account_temp) => {
     try {
         const response = await axios.post('http://localhost:3000/api/login/', { wallet: account_temp});
         account.value = response.data.walletHash;
-        localStorage.setItem('walletHash', response.data.walletHash)
+        localStorage.setItem('walletHash', response.data.walletHash);
+        localStorage.setItem('user_id', response.data.user_id);
     } catch (error) {
         console.log('Error sending data:', error)
     }

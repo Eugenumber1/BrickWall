@@ -1,6 +1,6 @@
 const { Identity } = require("@semaphore-protocol/identity");
 const { verifyProof, generateProof } = require("@semaphore-protocol/proof");
-const { Group } = require("@semaphore-protocol/group");
+//const { Group } = require("@semaphore-protocol/group");
 const bandada = require('./bandada');
 
 

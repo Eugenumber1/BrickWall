@@ -4,7 +4,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bandada = require('./bandada');
+const mySemaphore = require('./semaphore');
 const bodyParser = require('body-parser');
+const { stringify } = require('querystring');
 const app = express();
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -133,6 +135,7 @@ app.post('/api/login', async (req, res) => {
             res.status(401).json({ error: 'Invalid wallet' });
             return;
         }
+        const userIdent = await mySemaphore.createIdentity(userWalletHash);
 
         //Find wallet in Supabase. If not found, create a new user
         let user = await findUserByWallet(userWalletHash);
@@ -150,7 +153,7 @@ app.post('/api/login', async (req, res) => {
             user = await findUserByWallet(userWalletHash);
         }
 
-        res.json({  walletHash: userWalletHash }); //user_id: user.id,
+        res.json({ user_id: userIdent.commitment.toString(), walletHash: userWalletHash }); //user_id: user.id,
     } catch (error) {
         res.status(401).json({ error: 'Error logging in: ' + error.message, data: JSON.stringify(req.body) });
     }
