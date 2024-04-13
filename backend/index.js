@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bandada = require('./bandada');
+const bodyParser = require('body-parser');
 const app = express();
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -14,6 +15,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 app.use(express.json());
 
 app.use(cors());
+app.use(bodyParser.json());
 
 const port = 3000;
 
@@ -56,13 +58,6 @@ app.post('/api/company', async (req, res) => {
     const description = req.body.description;
     const created = await bandada.createGroup(name, description);
     res.json(created);
-});
-
-app.post('/api/company/:id/review', (req, res) => {
-    // TODO: upload a review for a company(group) to DB
-    const id = parseInt(req.params.id);
-    const review = req.body;
-    res.json({ id, review });
 });
 
 app.post('/api/company/:id/member/:memberid', async (req, res) => {
@@ -114,9 +109,18 @@ function verifyWalletHash(userWallet, originalHash) {
     return hash === originalHash;
 }
 
+async function findUserByWallet(userWallet) {
+    const {data} = await supabase
+        .from('users')
+        .select('*')
+        .eq('wallet', userWallet)
+    return data[0]; //we need only one user ^)))
+}
+
 app.post('/api/login', async (req, res) => {
     //Generate hash and verify Metamask wallet
     try {        
+        console.log(`User wallet: ${JSON.stringify(req.body.wallet)}`)
         const userWallet = req.body.wallet;
         const userWalletHash = generateWalletHash(userWallet);
         const isValid = verifyWalletHash(userWallet, userWalletHash);
@@ -126,16 +130,11 @@ app.post('/api/login', async (req, res) => {
         }
 
         //Find wallet in Supabase. If not found, create a new user
-        const {data, error} = await supabase
-            .from('users')
-            .select('*')
-            .eq('wallet', userWalletHash)
-        if (error) {
-            res.status(401).json({ error: 'Error fetching user: ' + error.message });
-        }
+        let user = await findUserByWallet(userWalletHash);
 
-        if (data.length === 0) {
-            const {data, error} = await supabase
+        if (user === null) {
+            console.log(`User not found, creating user: ${userWalletHash}`)
+            const {error} = await supabase
             .from('users')
             .insert([{wallet: userWalletHash}])
             if (error) {
@@ -143,8 +142,56 @@ app.post('/api/login', async (req, res) => {
             }
         }
 
-        res.json({ walletHash: userWalletHash });
+        if (user.id === null) {
+            console.log(`User not found, fetching user by wallet: ${userWalletHash}`)
+            user = await findUserByWallet(userWalletHash);
+        }
+
+        res.json({ user_id: user.id, walletHash: userWalletHash });
     } catch (error) {
         res.status(401).json({ error: 'Error logging in: ' + error.message, data: 'Data: ' + req.body });
     }
 })
+
+app.post('/api/saveReview', async (req, res) => {
+    try{        
+        const {error} = await supabase
+        .from('reviews')
+        .insert([{
+            company_id: req.body.company_id,
+            user_id: req.body.user_id,
+            content: req.body.content,
+            rating: req.body.rating
+        }])
+        if (error) {
+            res.status(401).json({ error: 'Error saving review: ' + error.message });
+        }
+        res.json({ status: 'Review saved.' });
+    }
+    catch (error) {
+        res.status(401).json({ error: 'Error saving review: ' + error.message });
+    }
+})
+
+app.post('/api/getReviewsCompany', async (req, res) => {
+    const {data, error} = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('company_id', req.body.company_id)
+    if (error) {
+        res.status(401).json({ error: 'Error fetching reviews by Company: ' + error.message });
+    }
+    res.json(data);
+})
+
+app.post('/api/getReviewsUser', async (req, res) => {
+    const {data, error} = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('user_id', req.body.user_id)
+    if (error) {
+        res.status(401).json({ error: 'Error fetching reviews by User: ' + error.message });
+    }
+    res.json(data);
+})
+
