@@ -3,7 +3,7 @@
         <img src="../assets/bw.svg" alt="Logo" class="h-10 w-10">
         <MainSearch class="w-full"></MainSearch>
         <!-- <button class="button--solid">connect wallet</button> -->
-        <ConnectWallet  />
+        <ConnectWallet />
     </nav>
 </template>
 <script setup>
