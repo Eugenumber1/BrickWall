@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "lodash": "^4.17.21",
     "minisearch": "^6.3.0",
+    "pinia": "^2.1.7",
     "vue": "^3.2.13",
     "vue-lodash": "^2.1.2",
     "vue-router": "^4.3.0"

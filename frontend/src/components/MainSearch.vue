@@ -11,10 +11,10 @@
 <script setup>
 import MiniSearch from 'minisearch'
 import axios from 'axios'
+import { ref, onMounted } from 'vue';
+import { useFiltersStore } from '@/filters.js';
 
-import { ref, defineEmits, onMounted } from 'vue';
-
-const emit = defineEmits('onSearch');
+const store = useFiltersStore();
 
 const FIELDS = ['name', 'location', 'industry']
 
@@ -34,8 +34,7 @@ const fetchData = async () => {
 
 const onSearchChanged = () => {
     let results = miniSearch.value.search(search.value, { prefix: true, fuzzy: 0.2 });
-    emit('onSearch', results);
-    console.log('results ', results);
+    store.searchResult.value = results;
 }
 
 onMounted(async () => {
