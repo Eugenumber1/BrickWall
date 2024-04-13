@@ -25,12 +25,13 @@ async function getGroupById(id) {
     try {
         const group = await apiSdk.getGroup(id);
         // TODO: - fetch reviews from db? 
-        const review = {
+/*         const review = {
             id: 1,
             rating: 5,
             comment: "Great company!"
         }
-        return { group, review };
+        return { group, review }; */
+        return group;
     } catch (error) {
         console.error(error);
         return null;

@@ -36,8 +36,9 @@ app.get('/api/companylist', async (req, res) => {
 
 app.get('/api/company/:id', async (req, res) => {
     const id = req.params.id;
-    const company = await bandada.getGroupById(id.toString());
-    res.json(company);
+    const company_id = await bandada.getGroupById(id.toString());
+    const reviews = await getCompanyReviewsById(company_id);
+    res.json({ company_id, reviews });
 });
 
 app.get('/api/company/:id/member/:memberid/proof', async (req, res) => {
@@ -50,8 +51,9 @@ app.get('/api/company/:id/member/:memberid/proof', async (req, res) => {
 app.get('/api/company/:id/members', async (req, res) => {
     const id = req.params.id;
     const groupData = await bandada.getGroupById(id.toString());
-    const members = groupData.group.members;
-    res.json(members);
+    const members = await getCompanyReviewsById(groupData)
+    //const members = groupData.group.members;
+    res.json(members.group.members);
 });
 
 app.post('/api/company', async (req, res) => {
@@ -124,6 +126,18 @@ async function findUserByWallet(userWallet) {
     return data[0]; //we need only one user ^)))
 }
 
+async function getCompanyReviewsById(company_id) {
+    const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('company_id', company_id)
+    if (error) {
+        console.log(`Error fetching reviews by Company: ${error.message}`)
+        return null;
+    }
+    return data;
+}
+
 app.post('/api/login', async (req, res) => {
     //Generate hash and verify Metamask wallet
     try {        
@@ -181,13 +195,7 @@ app.post('/api/saveReview', async (req, res) => {
 })
 
 app.post('/api/getReviewsCompany', async (req, res) => {
-    const { data, error } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('company_id', req.body.company_id)
-    if (error) {
-        res.status(401).json({ error: 'Error fetching reviews by Company: ' + error.message });
-    }
+    const data = await getCompanyReviewsById(req.body.company_id);
     res.json(data);
 })
 
