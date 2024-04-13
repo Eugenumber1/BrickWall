@@ -49,6 +49,7 @@ app.get('/api/company/:id/member/:memberid/proof', async (req, res) => {
 });
 
 app.get('/api/company/:id/members', async (req, res) => {
+    // TODO: Check it by members
     const id = req.params.id;
     const groupData = await bandada.getGroupById(id.toString());
     const members = await getCompanyReviewsById(groupData)
