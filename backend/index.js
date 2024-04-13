@@ -110,7 +110,7 @@ function verifyWalletHash(userWallet, originalHash) {
 }
 
 async function findUserByWallet(userWallet) {
-    const {data} = await supabase
+    const { data } = await supabase
         .from('users')
         .select('*')
         .eq('wallet', userWallet)
@@ -119,7 +119,7 @@ async function findUserByWallet(userWallet) {
 
 app.post('/api/login', async (req, res) => {
     //Generate hash and verify Metamask wallet
-    try {        
+    try {
         console.log(`User wallet: ${JSON.stringify(req.body.wallet)}`)
         const userWallet = req.body.wallet;
         const userWalletHash = generateWalletHash(userWallet);
@@ -134,9 +134,9 @@ app.post('/api/login', async (req, res) => {
 
         if (user === null) {
             console.log(`User not found, creating user: ${userWalletHash}`)
-            const {error} = await supabase
-            .from('users')
-            .insert([{wallet: userWalletHash}])
+            const { error } = await supabase
+                .from('users')
+                .insert([{ wallet: userWalletHash }])
             if (error) {
                 res.status(401).json({ error: 'Error creating user: ' + error.message });
             }
@@ -154,15 +154,15 @@ app.post('/api/login', async (req, res) => {
 })
 
 app.post('/api/saveReview', async (req, res) => {
-    try{        
-        const {error} = await supabase
-        .from('reviews')
-        .insert([{
-            company_id: req.body.company_id,
-            user_id: req.body.user_id,
-            content: req.body.content,
-            rating: req.body.rating
-        }])
+    try {
+        const { error } = await supabase
+            .from('reviews')
+            .insert([{
+                company_id: req.body.company_id,
+                user_id: req.body.user_id,
+                content: req.body.content,
+                rating: req.body.rating
+            }])
         if (error) {
             res.status(401).json({ error: 'Error saving review: ' + error.message });
         }
@@ -174,7 +174,7 @@ app.post('/api/saveReview', async (req, res) => {
 })
 
 app.post('/api/getReviewsCompany', async (req, res) => {
-    const {data, error} = await supabase
+    const { data, error } = await supabase
         .from('reviews')
         .select('*')
         .eq('company_id', req.body.company_id)
@@ -185,7 +185,7 @@ app.post('/api/getReviewsCompany', async (req, res) => {
 })
 
 app.post('/api/getReviewsUser', async (req, res) => {
-    const {data, error} = await supabase
+    const { data, error } = await supabase
         .from('reviews')
         .select('*')
         .eq('user_id', req.body.user_id)

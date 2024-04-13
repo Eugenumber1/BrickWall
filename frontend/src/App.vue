@@ -1,12 +1,12 @@
 <template>
-  <div class="flex w-full h-full min-h-screen">
-    <CompanyList></CompanyList>
+  <NavigationBar></NavigationBar>
+  <div class="flex w-full h-full min-h-screen pt-24">
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-import CompanyList from './components/CompanyList.vue';
-
+import NavigationBar from './components/NavigationBar.vue';
 
 </script>
 
