@@ -110,18 +110,23 @@ function verifyWalletHash(userWallet, originalHash) {
 }
 
 async function findUserByWallet(userWallet) {
-    const { data } = await supabase
+    const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('wallet', userWallet)
+    if (error) {
+        console.log(`Error fetching user by wallet: ${error.message}`)
+        return null;
+    }
+    
     return data[0]; //we need only one user ^)))
 }
 
 app.post('/api/login', async (req, res) => {
     //Generate hash and verify Metamask wallet
-    try {
-        console.log(`User wallet: ${JSON.stringify(req.body.wallet)}`)
-        const userWallet = req.body.wallet;
+    try {        
+        const userWallet = JSON.stringify(req.body.wallet);
+        console.log(`User wallet: ${userWallet}`)
         const userWalletHash = generateWalletHash(userWallet);
         const isValid = verifyWalletHash(userWallet, userWalletHash);
         if (!isValid) {
@@ -140,16 +145,14 @@ app.post('/api/login', async (req, res) => {
             if (error) {
                 res.status(401).json({ error: 'Error creating user: ' + error.message });
             }
-        }
 
-        if (user.id === null) {
-            console.log(`User not found, fetching user by wallet: ${userWalletHash}`)
+            //Get user by wallet
             user = await findUserByWallet(userWalletHash);
         }
 
-        res.json({ user_id: user.id, walletHash: userWalletHash });
+        res.json({  walletHash: userWalletHash }); //user_id: user.id,
     } catch (error) {
-        res.status(401).json({ error: 'Error logging in: ' + error.message, data: 'Data: ' + req.body });
+        res.status(401).json({ error: 'Error logging in: ' + error.message, data: JSON.stringify(req.body) });
     }
 })
 
@@ -160,6 +163,7 @@ app.post('/api/saveReview', async (req, res) => {
             .insert([{
                 company_id: req.body.company_id,
                 user_id: req.body.user_id,
+                user_walletHash: req.body.walletHash,
                 content: req.body.content,
                 rating: req.body.rating
             }])
@@ -188,7 +192,7 @@ app.post('/api/getReviewsUser', async (req, res) => {
     const { data, error } = await supabase
         .from('reviews')
         .select('*')
-        .eq('user_id', req.body.user_id)
+        .eq('user_walletHash', req.body.walletHash)
     if (error) {
         res.status(401).json({ error: 'Error fetching reviews by User: ' + error.message });
     }
