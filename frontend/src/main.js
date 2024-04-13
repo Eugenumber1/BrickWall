@@ -4,6 +4,7 @@ import router from './router';
 
 import './index.css'
 import './custom.less'
+import './typography.css'
 
 const app = createApp(App);
 app.use(router); // Mount the router
