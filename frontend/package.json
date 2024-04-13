@@ -15,7 +15,8 @@
     "pinia": "^2.1.7",
     "vue": "^3.2.13",
     "vue-lodash": "^2.1.2",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
