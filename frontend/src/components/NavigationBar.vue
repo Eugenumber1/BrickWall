@@ -1,5 +1,5 @@
 <template>
-    <nav class="fixed bg-white flex flex-row gap-x-5 w-full p-4">
+    <nav class="fixed bg-white flex flex-row gap-x-12 w-full p-4">
         <img src="../assets/bw.svg" alt="Logo" class="h-10 w-10">
         <MainSearch class="w-full"></MainSearch>
         <button class="button--solid">connect wallet</button>
