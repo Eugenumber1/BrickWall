@@ -20,7 +20,7 @@
 
             <div class="flex flex-col gap-y-6 mt-12">
                 <div class="">
-                    <span> Reivews:</span>
+                    <span class=" text-2xl font-semibold"> Reivews:</span>
 
                 </div>
                 <template v-for="review in reviews" :key="review.id">

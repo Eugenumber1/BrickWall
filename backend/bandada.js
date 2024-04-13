@@ -41,7 +41,7 @@ async function createGroup(name, description) {
     try {
         const company = await apiSdk.createGroup(
             {
-                name: name, 
+                name: name,
                 description: description,
                 treeDepth: 16, // keep tree depth at 16 for now
                 fingerprintDuration: 3600 // credentials are valid for 1 hour 

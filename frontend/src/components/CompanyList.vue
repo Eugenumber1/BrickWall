@@ -33,9 +33,32 @@ const fetchData = async () => {
     }
 }
 
+
+
 onMounted(async () => {
     fetchData();
+
+    // processCompanies();
 })
+
+// async function processCompanies() {
+//     console.log("BUG FLOOD")
+//     for (let company of companies) {
+//         await processCompany(company);
+//     }
+// }
+// const processCompany = async (company) => {
+//     try {
+//         const response = await axios.post('http://localhost:3000/api/company', {
+//             name: company.name,
+//             description: company.description
+//         });
+//         console.log(company.name + ' > ' + response)
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//     }
+// }
+
 
 console.log(_.random(5));
 </script>
