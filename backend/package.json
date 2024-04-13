@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "@bandada/api-sdk": "^2.2.6",
+    "@supabase/supabase-js": "^2.42.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2"
   },
   "devDependencies": {

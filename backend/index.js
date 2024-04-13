@@ -1,8 +1,16 @@
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
 app.use(cors());
 
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const pr_key = process.env.PR_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const port = 3000;
 
@@ -81,3 +89,52 @@ app.delete('/api/company/:id/member/:memberId', (req, res) => {
     const memberId = parseInt(req.params.memberId);
     res.json({ id, memberId });
 });
+
+/////////////////////////// DB ///////////////////////////
+
+function generateWalletHash(userWallet) {
+    const hmac = crypto.createHmac('sha256', pr_key);
+    hmac.update(userWallet);
+    const hash = hmac.digest('hex');
+    return hash;
+}
+
+function verifyWalletHash(userWallet, originalHash) {
+    const hash = generateWalletHash(userWallet, pr_key);
+    return hash === originalHash;
+}
+
+app.post('/api/login', async (req, res) => {
+    //Generate hash and verify Metamask wallet
+    try {        
+        const userWallet = req.body.wallet;
+        const userWalletHash = generateWalletHash(userWallet);
+        const isValid = verifyWalletHash(userWallet, userWalletHash);
+        if (!isValid) {
+            res.status(401).json({ error: 'Invalid wallet' });
+            return;
+        }
+
+        //Find wallet in Supabase. If not found, create a new user
+        const {data, error} = await supabase
+            .from('users')
+            .select('*')
+            .eq('wallet', userWalletHash)
+        if (error) {
+            res.status(401).json({ error: 'Error fetching user: ' + error.message });
+        }
+
+        if (data.length === 0) {
+            const {data, error} = await supabase
+            .from('users')
+            .insert([{wallet: userWalletHash}])
+            if (error) {
+                res.status(401).json({ error: 'Error creating user: ' + error.message });
+            }
+        }
+
+        res.json({ walletHash: userWalletHash });
+    } catch (error) {
+        res.status(401).json({ error: 'Error logging in: ' + error.message, data: 'Data: ' + req.body });
+    }
+})
