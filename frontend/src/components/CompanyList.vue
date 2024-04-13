@@ -1,28 +1,18 @@
 <template>
-    <div class="flex flex-col w-full px-16 gap-y-4">
-        <div>
-            Company count: {{ companyList.length }} {{ filters }}
-        </div>
-        <div class="flex flex-col gap-y-4 w-full ">
-            <template v-for="company in filteredList" :key="'company_repview_'+company.id">
-                <CompanyPreview :name="company.name" />
-            </template>
-        </div>
+    <div class="grid w-full  grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-8 px-8 md:px-16">
+        <template v-for="company in filteredList" :key="'company_repview_'+company.id">
+            <CompanyPreview :name="company.name" />
+        </template>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import CompanyPreview from './CompanyPreview.vue';
 import { useFiltersStore } from '@/filters.js';
 import _ from 'lodash'
 
-defineProps({
-    filters: {
-        type: Array
-    }
-})
 
 const filtersStore = useFiltersStore();
 const filteredList = computed(() => {
@@ -37,6 +27,7 @@ const fetchData = async () => {
     try {
         const response = await axios.get('http://localhost:3000/api/companyList');
         companyList.value = response.data;
+        filtersStore.companyList.value = response.data;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
