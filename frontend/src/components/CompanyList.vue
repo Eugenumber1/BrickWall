@@ -26,12 +26,9 @@ defineProps({
 
 const filtersStore = useFiltersStore();
 const filteredList = computed(() => {
-    if (filtersStore.searchResult.value == undefined || filtersStore.searchResult.value == []) return companyList.value;
+    if (filtersStore.searchResult.value == undefined || filtersStore.searchResult.value == [] || filtersStore.searchResult.value.length == 0) return companyList.value;
     const output = [];
-    filtersStore.searchResult.value.forEach(res => {
-        output.push(companyList.value.find(company => company.id == res.id));
-    });
-
+    filtersStore.searchResult.value.forEach(res => output.push(companyList.value.find(company => company.id == res.id)));
     return output;
 })
 const companyList = ref([]);
