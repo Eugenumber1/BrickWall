@@ -1,9 +1,10 @@
 <template>
     <a :href="'/company/' + id" class="flex relative w-full rounded-md h-80 group overflow-hidden cursor-pointer"
         @click="onPreviewClick">
+        <div class="absolute z-10 h-full opacity-10 w-full" :style="cardColorClass"></div>
         <img class="absolute h-full object-fill bg-black rounded-md blur-sm group-hover:scale-105 transition"
             src="./../assets/company_background.png" alt="">
-        <div class="transition-all z-10 p-5 flex flex-col  group-hover:mb-8 ">
+        <div class="transition-all z-20 p-5 flex flex-col  group-hover:mb-8 ">
             <span class="unbounded  mt-auto text-lg font-semibold text-[#2b2b2b]">{{ name }}</span>
         </div>
         <div class="absolute transition-all bottom-4 left-5 opacity-0 group-hover:opacity-100">
@@ -19,7 +20,8 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
+import _ from 'lodash';
 const props = defineProps({
     id: {
         type: Number,
@@ -54,4 +56,12 @@ const onPreviewClick = () => {
     let a = props;
     console.log(a);
 }
+
+const cardColorClass = ref();
+onMounted(() => {
+    const colorList = Array.from({ length: 20 }, () => '#' + Math.floor(Math.random() * 16777215).toString(16));
+    console.log(colorList);
+
+    cardColorClass.value = 'background-color:' + colorList[_.random(19)];
+})
 </script>
