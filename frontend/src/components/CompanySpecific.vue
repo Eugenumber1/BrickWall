@@ -13,9 +13,9 @@
             </div>
 
             <div class="flex flex-col mt-8 gap-y-4 pb-16 border-b border-[#2b2b2b]">
-                <span class="unbounded  mt-auto text-3xl font-semibold text-[#2b2b2b]">{{ company.name }}</span>
+                <span class="unbounded  mt-auto text-3xl font-semibold text-[#2b2b2b]">{{ company.name ?? '' }}</span>
                 <span style="max-width: 90%;" class=" text-lg leading-loose">
-                    {{ company.description }}
+                    {{ company.description ?? '' }}
                 </span>
             </div>
 
@@ -101,8 +101,7 @@ const processTime = (time) => {
 const fetchData = async () => {
     try {
         const response = await axios.get('http://localhost:3000/api/company/' + id);
-        company.value = response.data.group;
-        console.log(reviews.value)
+        company.value = response.data.company_id;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -115,7 +114,6 @@ const updateReviews = async () => {
         const response = await axios.post('http://localhost:3000/api/getReviewsCompany', { company_id: id });
         reviews.value = response.data;
         if (Array.isArray(reviews.value)) reviews.value = reviews.value.reverse();
-        console.log('reviews', response)
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -159,12 +157,10 @@ const onStartClicked = (index) => {
 }
 
 const handleMouseOver = (index) => {
-    console.log('over', index)
     hoveredRarting.value = index;
 }
 
 const handleMouseLeft = (index) => {
-    console.log('handleMouseLeft', index)
     newReviewRating.value = index;
     hoveredRarting.value = newReviewRating.value;
 
