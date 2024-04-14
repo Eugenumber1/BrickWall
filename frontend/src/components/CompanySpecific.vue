@@ -2,7 +2,7 @@
     <div class="fixed z-50 w-full bg-white grid grid-cols-8">
         <div class="flex flex-row gap-x-12 w-full p-4 col-start-3 col-span-4 justify-between">
             <a href="/"><img src="../assets/bw.svg" alt="Logo" class="h-12 w-12"></a>
-            <a href="/"><button class="button--solid text-[#2b2b2b] py-2">all companies</button></a>
+            <ConnectWallet></ConnectWallet>
         </div>
     </div>
     <div class="grid grid-cols-8 w-full h-full min-h-screen pt-24 ">
@@ -19,7 +19,7 @@
                 </span>
             </div>
 
-            <div class="flex flex-col p-3 mt-24 ">
+            <div v-if="isUserRegistered" class="flex flex-col p-3 mt-24 ">
                 <span class=" font-medium text-3xl mt-2 mb-8">Leave your <span
                         class="font-semibold text-[#B84F4F]">mark</span></span>
 
@@ -92,6 +92,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router';
+import ConnectWallet from './ConnectWallet.vue';
 import _ from 'lodash'
 const route = useRoute();
 const id = route.params.id;
@@ -124,9 +125,13 @@ const updateReviews = async () => {
         console.error('Error fetching data:', error);
     }
 }
+const isUserRegistered = ref(false)
 
 onMounted(async () => {
     fetchData();
+    const old_wallet = localStorage.getItem('walletHash');
+    const old_id = localStorage.getItem('user_id');
+    if (old_wallet && old_id) isUserRegistered.value = true;
 })
 
 
