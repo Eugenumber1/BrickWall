@@ -1,7 +1,7 @@
 const { ApiSdk } = require("@bandada/api-sdk");
 require('dotenv').config();
 
-const ADMIN_ID = '0x4aabb51acc1e31313aa6f8fc9737e33a3b2fb19bfda60e93078c6e6ce801d25b'; // HARDCODED ADMIN_ID DUE TO MISSING ENDPOINT TO GET ADMIN_ID
+const ADMIN_ID = '0xedd868aa823ed4bb411ae68a80f4ae96f761f8480ca146ba0a8f52a46a42376c'; /// HARDCODED ADMIN_ID DUE TO MISSING ENDPOINT TO GET ADMIN_ID
 
 const adminApiKey = process.env.ADMIN_API_KEY;
 
@@ -25,12 +25,12 @@ async function getGroupById(id) {
     try {
         const group = await apiSdk.getGroup(id);
         // TODO: - fetch reviews from db? 
-/*         const review = {
-            id: 1,
-            rating: 5,
-            comment: "Great company!"
-        }
-        return { group, review }; */
+        /*         const review = {
+                    id: 1,
+                    rating: 5,
+                    comment: "Great company!"
+                }
+                return { group, review }; */
         return group;
     } catch (error) {
         console.error(error);
