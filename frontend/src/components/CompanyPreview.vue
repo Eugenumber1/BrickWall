@@ -1,7 +1,7 @@
 <template>
     <a :href="'/company/' + id" class="flex relative w-full rounded-md h-80 group overflow-hidden cursor-pointer"
         @click="onPreviewClick">
-        <div class="absolute z-10 h-full opacity-10 w-full" :style="cardColorClass"></div>
+        <div class="absolute z-10 h-full opacity-5 w-full" :style="cardColorClass"></div>
         <img class="absolute h-full object-fill bg-black rounded-md blur-sm group-hover:scale-105 transition"
             src="./../assets/company_background.png" alt="">
         <div class="transition-all z-20 p-5 flex flex-col  group-hover:mb-8 ">
@@ -21,7 +21,7 @@
 
 <script setup>
 import { defineProps, onMounted, ref } from 'vue';
-import _ from 'lodash';
+// import _ from 'lodash';
 const props = defineProps({
     id: {
         type: Number,
@@ -59,9 +59,14 @@ const onPreviewClick = () => {
 
 const cardColorClass = ref();
 onMounted(() => {
-    const colorList = Array.from({ length: 20 }, () => '#' + Math.floor(Math.random() * 16777215).toString(16));
-    console.log(colorList);
 
-    cardColorClass.value = 'background-color:' + colorList[_.random(19)];
+
+    const colorList = [
+        '#FF5733', '#33FF57', '#5733FF', '#FF33A6', '#33A6FF',
+        '#A6FF33', '#FF336C', '#33FFA6', '#336CFF', '#A6FF33',
+        '#FFB533', '#B533FF', '#33FFB5', '#FF3357', '#3357FF',
+        '#FF5733', '#33FF57', '#5733FF', '#FF33A6', '#33A6FF'
+    ];
+    cardColorClass.value = 'background-color:' + colorList[props.id[0]] ?? '#33A6FF';
 })
 </script>
