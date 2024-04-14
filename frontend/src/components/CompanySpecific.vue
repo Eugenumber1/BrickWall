@@ -14,7 +14,7 @@
 
             <div class="flex flex-col mt-8 gap-y-4 ">
                 <span class="unbounded  mt-auto text-3xl font-semibold text-[#2b2b2b]">{{ company.name }}</span>
-                <span>
+                <span style="max-width: 70%;" class=" text-lg">
                     {{ company.description }}
                 </span>
             </div>
@@ -46,7 +46,7 @@
 
             </div>
 
-            <div class="flex flex-col gap-y-6 mt-12">
+            <div class="flex flex-col gap-y-6 mt-12 mb-24">
                 <div class="">
                     <span class=" text-2xl font-semibold"> Reivews:</span>
 
@@ -114,6 +114,7 @@ const updateReviews = async () => {
     try {
         const response = await axios.post('http://localhost:3000/api/getReviewsCompany', { company_id: id });
         reviews.value = response.data;
+        if (Array.isArray(reviews.value)) reviews.value = reviews.value.reverse();
         console.log('reviews', response)
     } catch (error) {
         console.error('Error fetching data:', error);
