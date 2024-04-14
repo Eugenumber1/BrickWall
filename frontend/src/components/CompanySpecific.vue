@@ -77,6 +77,12 @@
 
                     </div>
                 </template>
+
+                <div class="flex w-ful px-8 py-12 bg-gray-200 rounded-lg text-gray-500 font-semibold"
+                    v-if="reviews == undefined || reviews.length == 0">
+                    <span class="m-auto"> Oh no! We didnt find any reviews {{ ':(' }}</span>
+
+                </div>
             </div>
         </div>
     </div>
