@@ -6,6 +6,7 @@ import router from './router';
 import './index.css'
 import './custom.less'
 import './typography.css'
+import 'vue-slider-component/theme/default.css'
 
 const pinia = createPinia()
 const app = createApp(App);

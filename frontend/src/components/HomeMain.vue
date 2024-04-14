@@ -1,7 +1,11 @@
 <template>
+    <NavigationBar></NavigationBar>
     <div class="flex flex-col h-full w-full gap-y-8">
         <div class="flex flex-col mx-auto py-24 gap-y-16">
             <h1 class="text-9xl font-semibold"> Brick Wall</h1>
+            <span class="mb-8 text-center text-2xl">
+                Building BrickWall behing a glass door
+            </span>
             <div class="grid grid-cols-4 grid-rows-2 rounded-lg border border-[#2b2b2b]">
                 <span class="border-r border-b border-[#2b2b2b] p-4">companies</span>
                 <span class="border-r border-b border-[#2b2b2b]  p-4">reviews</span>
@@ -19,8 +23,11 @@
 
 <script setup>
 import CompanyList from './CompanyList.vue';
+import NavigationBar from './NavigationBar.vue';
 import { useFiltersStore } from '@/filters.js';
 import { computed } from 'vue'
+
+
 
 const store = useFiltersStore();
 const companyCount = computed(() => Array.isArray(store.companyList.value) ? store.companyList.value.length : 0);
