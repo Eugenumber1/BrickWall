@@ -48,7 +48,7 @@
 
             <div class="flex flex-col gap-y-6 mt-12 mb-24">
                 <div class="">
-                    <span class=" text-2xl font-semibold"> Reivews:</span>
+                    <span class=" text-2xl font-semibold"> Reviews:</span>
 
                 </div>
                 <template v-for="review in reviews" :key="review.id">
