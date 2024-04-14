@@ -20,12 +20,26 @@
             </div>
 
             <div class="flex flex-col rounded-lg border border-[#2b2b2b] p-3 mt-12">
+                <span class=" font-medium text-3xl mt-2 mb-8">Leave your <span
+                        class="font-semibold text-[#B84F4F]">mark</span></span>
+
+
                 <div class="w-full flex flex-col">
-                    {{ newReviewRating }}
+                    <span class=" text-xl">Give a score to a company:</span>
+                    <span class="my-2 flex">
+                        <div v-for="i in _.range(0, 10)" :key="i" class="cursor-pointer hover:scale-110 px-1"
+                            @mouseover="() => handleMouseOver(i)" @mouseout="() => handleMouseLeft(i)"
+                            @click="() => onStartClicked(i)">
+                            <img v-if="i <= hoveredRarting" src="./../assets/star.svg" class="w-6">
+                            <img v-else src="./../assets/star_empty.svg" class="w-6">
+                        </div>
+                    </span>
+
                 </div>
                 <div class=" w-full flex flex-col mt-6">
-                    <span class="font-semibold mb-2">Your review: </span>
-                    <textarea type="textarea" class="main-input outline-none p-5" v-model="newReviewContent" rows="4"
+
+                    <span class=" text-xl mb-2">Share you experience:</span>
+                    <textarea type="textarea" class="main-input outline-none p-5 my-2" v-model="newReviewContent" rows="4"
                         cols="50" />
                 </div>
                 <button class="button--solid mt-4" @click="onAddReview">add review</button>
@@ -72,7 +86,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router';
-
+import _ from 'lodash'
 const route = useRoute();
 const id = route.params.id;
 
@@ -93,6 +107,10 @@ const fetchData = async () => {
         console.error('Error fetching data:', error);
     }
 
+    await updateReviews();
+}
+
+const updateReviews = async () => {
     try {
         const response = await axios.post('http://localhost:3000/api/getReviewsCompany', { company_id: id });
         reviews.value = response.data;
@@ -109,7 +127,7 @@ onMounted(async () => {
 
 const newReviewContent = ref('');
 const newReviewRating = ref(0);
-
+const hoveredRarting = ref();
 
 const onAddReview = async () => {
     try {
@@ -125,9 +143,28 @@ const onAddReview = async () => {
             rating: newReviewRating.value,
         });
         reviews.value = response.data;
-        console.log('reviews', response)
+        updateReviews();
+
+        newReviewContent.value = '';
+        newReviewRating.value = 0;
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+}
+
+const onStartClicked = (index) => {
+    newReviewRating.value = index;
+}
+
+const handleMouseOver = (index) => {
+    console.log('over', index)
+    hoveredRarting.value = index;
+}
+
+const handleMouseLeft = (index) => {
+    console.log('handleMouseLeft', index)
+    newReviewRating.value = index;
+    hoveredRarting.value = newReviewRating.value;
+
 }
 </script>
