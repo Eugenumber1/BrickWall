@@ -21,3 +21,9 @@ Install dependecnies
   - yarn serve
 
   enjoy and god bless you
+
+
+  ##General
+
+  
+  Taikai: https://taikai.network/cryptocanal/hackathons/ethdam2024/projects/cluz8gb2701a9z301ptjuvhlo/idea
