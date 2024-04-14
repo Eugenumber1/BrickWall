@@ -1,6 +1,6 @@
 <template>
     <button @click="connectWallet" class="button--solid flex gap-x-3">
-        <span> connect wallet </span><img src="../assets/metamask.png" alt="MetaMask" class="h-6 mr-6">
+        <span> {{isUserRegistered==true?'wallet connected':'connect wallet'}} </span><img src="../assets/metamask.png" alt="MetaMask" class="h-6 mr-6">
     </button>
 </template>
 
@@ -9,6 +9,7 @@ import { ref } from "vue";
 import axios from 'axios'
 
 const account = ref(null);
+const isUserRegistered = ref(false);
 
 function connectWallet() {
     if (window.ethereum) {
@@ -32,7 +33,12 @@ function handleAccountsChanged(accounts) {
     } else {
         let account_temp = accounts[0];
         //account.value = accounts[0];
-        sendData(account_temp)
+        window.ethereum.request({
+            "method": "personal_sign",
+            "params": [ "You are using your Ethereum Wallet to sign in to BrickWall.", account_temp ]
+        })
+        .then(sendData(account_temp))
+        .then(isUserRegistered.value = true)
     }
 }
 
